@@ -32,6 +32,12 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "localhost",
         port: "5000",
+      },
+      // Production backend on this Coolify VPS - disk-storage uploads are
+      // served from https://api-mawa.80.190.73.140.sslip.io/uploads/...
+      {
+        protocol: "https",
+        hostname: "api-mawa.80.190.73.140.sslip.io",
       },
       // Production backend on the VPS — disk-storage uploads are served from
       // https://api.healixbd.com/uploads/...
