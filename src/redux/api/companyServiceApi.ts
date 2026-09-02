@@ -10,7 +10,7 @@ export const companyServiceApi = baseApi.injectEndpoints({
                     method: 'GET',
                 };
             },
-            providesTags: ['companyService'],
+            providesTags: ['CompanyServices'],
         }),
         getAdminCompanyServices: builder.query({
             query: () => '/company-services/admin/all',
