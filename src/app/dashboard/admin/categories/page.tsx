@@ -11,6 +11,7 @@ import {
     useUpdateCategoryMutation,
 } from '@/redux/api/categoryApi';
 import { toast } from 'react-hot-toast';
+import { SingleImageUploader } from '@/components/ui/ImageUploader';
 
 /* ─── Styles ─── */
 const inp: React.CSSProperties = { width: '100%', padding: '9px 12px', border: '1.5px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' };
@@ -56,7 +57,7 @@ const CategoriesPage = () => {
     /* ─── Modal State ─── */
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [form, setForm] = useState({ name: '', icon: '', description: '', parent: '', isActive: true, showInMenu: true, showInHome: true });
+    const [form, setForm] = useState({ name: '', icon: '', image: '', order: 0, description: '', parent: '', isActive: true, showInMenu: true, showInHome: true });
     /* per-field inline errors (mirrors backend errorMessages[].path → message) */
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -65,7 +66,9 @@ const CategoriesPage = () => {
 
     const openCreate = () => {
         setEditingId(null);
-        setForm({ name: '', icon: '', description: '', parent: '', isActive: true, showInMenu: true, showInHome: true });
+        // Auto-suggest the next serial so a new category lands at the end.
+        const nextOrder = categories.reduce((m: number, x: any) => Math.max(m, x.order ?? 0), 0) + 1;
+        setForm({ name: '', icon: '', image: '', order: nextOrder, description: '', parent: '', isActive: true, showInMenu: true, showInHome: true });
         setFieldErrors({});
         setModalOpen(true);
     };
@@ -75,6 +78,8 @@ const CategoriesPage = () => {
         setForm({
             name: cat.name || '',
             icon: cat.icon || '',
+            image: cat.image || '',
+            order: cat.order ?? 0,
             description: cat.description || '',
             parent: parentId(cat),
             isActive: cat.isActive !== false,
@@ -91,7 +96,8 @@ const CategoriesPage = () => {
     const validate = (): Record<string, string> => {
         const errs: Record<string, string> = {};
         if (!form.name.trim()) errs.name = 'Category name is required';
-        if (!form.icon) errs.icon = 'Please select an icon for this category';
+        // Either a preset icon OR a custom uploaded image is required.
+        if (!form.icon && !form.image) errs.icon = 'Pick a preset icon or upload your own image';
         return errs;
     };
 
@@ -108,6 +114,8 @@ const CategoriesPage = () => {
         const payload: any = {
             name: form.name.trim(),
             icon: form.icon,
+            image: form.image,
+            order: Number(form.order) || 0,
             description: form.description,
             isActive: form.isActive,
             showInMenu: form.showInMenu,
@@ -231,8 +239,11 @@ const CategoriesPage = () => {
                                         width: '36px', height: '36px', borderRadius: '8px',
                                         background: '#f5f5f5', display: 'flex', alignItems: 'center',
                                         justifyContent: 'center', flexShrink: 0, fontSize: '18px',
+                                        overflow: 'hidden',
                                     }}>
-                                        {cat.icon || <LuLayoutGrid size={16} color="#bbb" />}
+                                        {cat.image
+                                            ? <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            : (cat.icon || <LuLayoutGrid size={16} color="#bbb" />)}
                                     </div>
                                     <div>
                                         <p style={{ fontSize: '13px', fontWeight: 700, color: '#111', margin: 0, display: 'flex', alignItems: 'center', gap: '7px' }}>
@@ -244,6 +255,13 @@ const CategoriesPage = () => {
                                             )}
                                         </p>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px', flexWrap: 'wrap' }}>
+                                            <span style={{
+                                                fontSize: '9px', fontWeight: 700,
+                                                padding: '1px 6px', borderRadius: '999px',
+                                                background: '#eef2ff', color: '#6366f1',
+                                            }}>
+                                                #{cat.order ?? 0}
+                                            </span>
                                             <span style={{ fontSize: '10.5px', color: '#aaa', fontFamily: 'monospace' }}>{cat.slug}</span>
                                             <span style={{
                                                 fontSize: '9px', fontWeight: 700,
@@ -399,10 +417,26 @@ const CategoriesPage = () => {
                                 {fieldErrors.parent && <p style={errStyle}>{fieldErrors.parent}</p>}
                             </div>
 
+                            {/* Serial / display order */}
+                            <div>
+                                <label style={lbl}>Serial / Display Order <span style={{ color: '#aaa', fontWeight: 400 }}>(1 = shown first)</span></label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    placeholder="e.g. 1, 2, 3…"
+                                    value={form.order}
+                                    onChange={e => setForm(p => ({ ...p, order: e.target.value === '' ? 0 : Number(e.target.value) }))}
+                                    style={{ ...inp, maxWidth: '160px' }}
+                                />
+                                <p style={{ fontSize: '11px', color: '#9ca3af', margin: '5px 0 0' }}>
+                                    Categories are ordered by this number everywhere they appear — 1 first, then 2, 3, and so on.
+                                </p>
+                            </div>
+
                             {/* Icon Picker */}
                             <div>
                                 <label style={lbl}>
-                                    Category Icon <span style={{ color: '#ef4444' }}>*</span>
+                                    Category Icon or Image <span style={{ color: '#ef4444' }}>*</span>
                                     {form.icon && (
                                         <span style={{
                                             marginLeft: '10px', fontSize: '11px', fontWeight: 500,
@@ -440,11 +474,15 @@ const CategoriesPage = () => {
                                     </div>
                                 )}
 
+                                <p style={{ fontSize: '11.5px', color: '#777', margin: '0 0 8px' }}>
+                                    Pick a ready-made icon below, <strong>or</strong> upload your own image from your phone / computer at the bottom. If you upload an image, it is used instead of the icon.
+                                </p>
+
                                 {/* Icon Grid */}
                                 <div style={{
                                     display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px',
                                     padding: '12px', background: '#fafafa',
-                                    border: `1.5px solid ${!form.icon ? '#fca5a5' : '#e5e7eb'}`,
+                                    border: `1.5px solid ${(!form.icon && !form.image) ? '#fca5a5' : '#e5e7eb'}`,
                                     borderRadius: '8px',
                                 }}>
                                     {ICON_OPTIONS.map((opt) => (
@@ -483,11 +521,30 @@ const CategoriesPage = () => {
                                         </button>
                                     ))}
                                 </div>
-                                {(!form.icon || fieldErrors.icon) && (
+                                {((!form.icon && !form.image) || fieldErrors.icon) && (
                                     <p style={{ fontSize: '11px', color: '#ef4444', marginTop: '4px', margin: '4px 0 0' }}>
-                                        ⚠ {fieldErrors.icon || 'Please select an icon to continue'}
+                                        ⚠ {fieldErrors.icon || 'Pick a preset icon or upload your own image to continue'}
                                     </p>
                                 )}
+
+                                {/* Custom image upload — click to pick from the device file browser,
+                                    or drag & drop. Takes priority over the preset icon when set. */}
+                                <div style={{
+                                    marginTop: '14px', paddingTop: '14px',
+                                    borderTop: '1px dashed #e5e7eb',
+                                }}>
+                                    <SingleImageUploader
+                                        label="Or upload your own image (from phone / PC)"
+                                        value={form.image}
+                                        onChange={(url) => { setForm(p => ({ ...p, image: url })); if (fieldErrors.icon) setFieldErrors(p => ({ ...p, icon: '' })); }}
+                                        folder="categories"
+                                    />
+                                    {form.image && (
+                                        <p style={{ fontSize: '11px', color: '#16a34a', margin: '6px 0 0', fontWeight: 600 }}>
+                                            ✓ Your uploaded image will be shown for this category.
+                                        </p>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Description */}

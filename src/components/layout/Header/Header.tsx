@@ -24,6 +24,7 @@ interface Category {
     name: string;
     slug: string;
     icon?: string;
+    image?: string;
 }
 
 const Header: React.FC = () => {
@@ -212,7 +213,9 @@ const Header: React.FC = () => {
                                                                     ? { color: 'var(--color-primary)', fontWeight: 600, background: 'var(--color-primary-lightest)' }
                                                                     : { color: '#374151' }}
                                                             >
-                                                                {cat.icon && <span className="text-sm leading-none">{cat.icon}</span>}
+                                                                {cat.image
+                                                                    ? <img src={cat.image} alt={cat.name} className="w-4 h-4 rounded object-cover" loading="lazy" />
+                                                                    : (cat.icon && <span className="text-sm leading-none">{cat.icon}</span>)}
                                                                 {cat.name}
                                                             </button>
                                                         ))}
@@ -389,7 +392,9 @@ const Header: React.FC = () => {
                                                     className="flex items-center gap-2 px-3 py-2 text-gray-600 text-sm rounded-md hover:bg-[var(--color-primary-lightest)] hover:text-[var(--color-primary)] transition-colors"
                                                     onClick={() => setIsMobileMenuOpen(false)}
                                                 >
-                                                    {cat.icon && <span className="text-sm">{cat.icon}</span>}
+                                                    {cat.image
+                                                        ? <img src={cat.image} alt={cat.name} className="w-4 h-4 rounded object-cover" loading="lazy" />
+                                                        : (cat.icon && <span className="text-sm">{cat.icon}</span>)}
                                                     {cat.name}
                                                 </Link>
                                             ))}
