@@ -99,6 +99,28 @@ export default function SiteContentPage() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {/* Mobile-responsive rules for this page. Inline styles can't carry media
+                queries, so these class-based overrides (with !important to beat the
+                inline base styles) collapse the two-column layout, the side tab rail
+                and the side-by-side EN/BN + image grids into single columns on phones. */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .sc-layout { flex-direction: column !important; gap: 14px !important; }
+                    .sc-sidebar {
+                        width: 100% !important;
+                        flex-direction: row !important;
+                        flex-wrap: nowrap !important;
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch;
+                        gap: 6px !important;
+                        padding: 8px !important;
+                    }
+                    .sc-sidebar .sc-tab-btn { width: auto !important; white-space: nowrap !important; flex: 0 0 auto !important; }
+                    .sc-bi-grid { grid-template-columns: 1fr !important; }
+                    .sc-service-row { grid-template-columns: 1fr !important; }
+                    .sc-service-row .sc-img-col { max-width: 220px; }
+                }
+            `}</style>
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
                 <div>
@@ -110,13 +132,13 @@ export default function SiteContentPage() {
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+            <div className="sc-layout" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
                 {/* Left Sidebar (Vertical Tabs) */}
-                <div style={{ 
-                    width: '240px', 
-                    flexShrink: 0, 
-                    display: 'flex', 
-                    flexDirection: 'column', 
+                <div className="sc-sidebar" style={{
+                    width: '240px',
+                    flexShrink: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
                     gap: '4px',
                     background: '#fff',
                     border: '1px solid #eee',
@@ -127,6 +149,7 @@ export default function SiteContentPage() {
                     {TABS.map(tab => (
                         <button
                             key={tab.key}
+                            className="sc-tab-btn"
                             onClick={() => setActiveTab(tab.key)}
                             style={{
                                 display: 'flex', alignItems: 'center', gap: '10px',
@@ -245,7 +268,7 @@ function BiInput({
     return (
         <div>
             <label style={label}>{labelText}</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div className="sc-bi-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <div style={{ position: 'relative' }}>
                     <span style={badge}>EN</span>
                     <input
@@ -285,7 +308,7 @@ function BiTextarea({
     return (
         <div>
             <label style={label}>{labelText}</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <div className="sc-bi-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <div style={{ position: 'relative' }}>
                     <span style={badge}>EN</span>
                     <textarea
@@ -443,8 +466,10 @@ function ServicesSectionTab({ data, setData }: { data: any; setData: any }) {
                                 <button onClick={() => remove(idx)} style={btnDanger}><LuTrash2 size={13} /></button>
                             </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '12px', alignItems: 'start' }}>
-                            <SingleImageUploader label="Card image" value={it.image || ''} onChange={(url: string) => update(idx, 'image', url)} />
+                        <div className="sc-service-row" style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: '12px', alignItems: 'start' }}>
+                            <div className="sc-img-col">
+                                <SingleImageUploader label="Card image" value={it.image || ''} onChange={(url: string) => update(idx, 'image', url)} />
+                            </div>
                             <div style={{ display: 'grid', gap: '8px' }}>
                                 <BiInput label="Title (optional)" value={it.title} onChange={v => update(idx, 'title', v)} placeholderEn="Service name" placeholderBn="সার্ভিসের নাম" />
                                 <BiInput label="Description (optional)" value={it.description} onChange={v => update(idx, 'description', v)} placeholderEn="Short description" placeholderBn="সংক্ষিপ্ত বিবরণ" />

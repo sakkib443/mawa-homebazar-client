@@ -17,8 +17,10 @@ const HowItWorksSection: React.FC = () => {
 
     if (!s || s.enabled === false) return null;
 
+    // Require real text (title or description) before a step renders — a step that
+    // only carries a number would otherwise show as an empty box on the homepage.
     const steps = (s.steps || [])
-        .filter((it: any) => it.active !== false && (it.step || pickText(it.title, lang) || pickText(it.description, lang)))
+        .filter((it: any) => it.active !== false && (pickText(it.title, lang) || pickText(it.description, lang)))
         .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
 
     if (steps.length === 0) return null;

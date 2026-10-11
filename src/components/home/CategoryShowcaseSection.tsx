@@ -44,7 +44,9 @@ const CategoryShowcaseSection: React.FC = () => {
                             href={`/products?category=${c._id}`}
                             className="group inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 sm:px-4 sm:py-2 text-[12px] sm:text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-[var(--color-primary-border)] hover:bg-[var(--color-primary-lightest)] hover:text-[var(--color-primary)]"
                         >
-                            {c.icon && c.icon.length <= 4 && <span className="text-base leading-none">{c.icon}</span>}
+                            {c.image
+                                ? <img src={c.image} alt={c.name} className="w-5 h-5 rounded-full object-cover" loading="lazy" />
+                                : (c.icon && c.icon.length <= 4 && <span className="text-base leading-none">{c.icon}</span>)}
                             <span>{c.name}</span>
                         </Link>
                     ))}

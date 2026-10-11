@@ -35,7 +35,7 @@ const AdminServicesPage = () => {
     const [editingId, setEditingId] = useState<string | null>(null);
     // The type of the row currently being edited (preserved on update).
     const [editingType, setEditingType] = useState<'service' | 'product_company'>('service');
-    const [form, setForm] = useState({ title: '', titleBn: '', description: '', descriptionBn: '', image: '', isActive: true });
+    const [form, setForm] = useState({ title: '', titleBn: '', description: '', descriptionBn: '', image: '', isActive: true, order: 0 });
     /* per-field inline errors */
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -49,7 +49,10 @@ const AdminServicesPage = () => {
     const openCreate = () => {
         setEditingId(null);
         setEditingType(activeTab);
-        setForm({ title: '', titleBn: '', description: '', descriptionBn: '', image: '', isActive: true });
+        // Auto-suggest the next serial number for this tab so new rows land at the end.
+        const typeItems = services.filter((x: any) => (x.type === 'product_company' ? 'product_company' : 'service') === activeTab);
+        const nextOrder = typeItems.reduce((m: number, x: any) => Math.max(m, x.order ?? 0), 0) + 1;
+        setForm({ title: '', titleBn: '', description: '', descriptionBn: '', image: '', isActive: true, order: nextOrder });
         setFieldErrors({});
         setModalOpen(true);
     };
@@ -64,6 +67,7 @@ const AdminServicesPage = () => {
             descriptionBn: srv.descriptionBn || '',
             image: srv.image || '',
             isActive: srv.isActive !== false,
+            order: srv.order ?? 0,
         });
         setFieldErrors({});
         setModalOpen(true);
@@ -93,6 +97,8 @@ const AdminServicesPage = () => {
             descriptionBn: form.descriptionBn,
             image: form.image,
             isActive: form.isActive,
+            // Serial position on the homepage — lower numbers show first.
+            order: Number(form.order) || 0,
             // New rows take the active tab's type; edits keep their original type.
             type: editingId ? editingType : activeTab,
         };
@@ -242,6 +248,13 @@ const AdminServicesPage = () => {
                                             )}
                                         </p>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px', flexWrap: 'wrap' }}>
+                                            <span style={{
+                                                fontSize: '9px', fontWeight: 700,
+                                                padding: '1px 6px', borderRadius: '999px',
+                                                background: '#eef2ff', color: '#6366f1',
+                                            }}>
+                                                #{srv.order ?? 0}
+                                            </span>
                                             <span style={{ fontSize: '10.5px', color: '#aaa', fontFamily: 'monospace' }}>{srv.slug}</span>
                                             <span style={{
                                                 fontSize: '9px', fontWeight: 700,
@@ -379,6 +392,23 @@ const AdminServicesPage = () => {
                                     onChange={e => setForm(p => ({ ...p, titleBn: e.target.value }))}
                                     style={inp}
                                 />
+                            </div>
+
+                            {/* Serial / display order — controls the position on the homepage
+                                (1 = shown first). Lower numbers appear earlier. */}
+                            <div>
+                                <label style={lbl}>Serial / Display Order <span style={{ color: '#aaa', fontWeight: 400 }}>(1 = shown first on the homepage)</span></label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    placeholder="e.g. 1, 2, 3…"
+                                    value={form.order}
+                                    onChange={e => setForm(p => ({ ...p, order: e.target.value === '' ? 0 : Number(e.target.value) }))}
+                                    style={{ ...inp, maxWidth: '160px' }}
+                                />
+                                <p style={{ fontSize: '11px', color: '#9ca3af', margin: '5px 0 0' }}>
+                                    Cards are sorted by this number on the home page — 1 first, then 2, 3, and so on.
+                                </p>
                             </div>
 
                             {/* Direct file upload (click or drag) — uploads to the server and
