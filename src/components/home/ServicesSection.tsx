@@ -8,7 +8,7 @@ import { useLanguage } from '@/lib/i18n/LanguageProvider';
 import { pickText } from '@/lib/i18n/text';
 import ContentIcon from '@/components/shared/ContentIcon';
 
-const MAX_ITEMS = 16;
+const MAX_ITEMS = 32;
 
 const ServicesSection: React.FC = () => {
     const { data } = useGetSiteContentQuery(undefined);

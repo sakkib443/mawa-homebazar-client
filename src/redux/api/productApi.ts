@@ -177,6 +177,34 @@ export const productApi = baseApi.injectEndpoints({
             }),
             providesTags: ['Products'],
         }),
+        // Admin: company-submitted products awaiting moderation.
+        // Backend route: GET /api/products/moderation?approvalStatus=pending&page=&limit=
+        // Response: { data: { products: [...], meta: {...} } }
+        getModerationProducts: builder.query({
+            query: (params: { approvalStatus?: string; page?: number; limit?: number; company?: string } = {}) => ({
+                url: '/products/moderation',
+                params,
+            }),
+            providesTags: ['Products'],
+        }),
+        // Admin: approve a pending company product — PATCH /api/products/moderation/:id/approve
+        approveProduct: builder.mutation({
+            query: ({ id, note }: { id: string; note?: string }) => ({
+                url: `/products/moderation/${id}/approve`,
+                method: 'PATCH',
+                body: { note: note || '' },
+            }),
+            invalidatesTags: ['Products'],
+        }),
+        // Admin: reject a pending company product — PATCH /api/products/moderation/:id/reject
+        rejectProduct: builder.mutation({
+            query: ({ id, note }: { id: string; note?: string }) => ({
+                url: `/products/moderation/${id}/reject`,
+                method: 'PATCH',
+                body: { note: note || '' },
+            }),
+            invalidatesTags: ['Products'],
+        }),
     }),
 });
 
@@ -198,4 +226,7 @@ export const {
     useIncrementProductStatMutation,
     useBulkUploadProductsMutation,
     useGetProductLowStockQuery,
+    useGetModerationProductsQuery,
+    useApproveProductMutation,
+    useRejectProductMutation,
 } = productApi;

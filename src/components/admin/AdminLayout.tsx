@@ -49,6 +49,7 @@ const menuSections = [
                 name: 'Products', href: '/dashboard/admin/products', icon: LuShoppingBag, submenu: [
                     { name: 'All Products', href: '/dashboard/admin/products' },
                     { name: 'Add Product', href: '/dashboard/admin/products/new' },
+                    { name: 'Product Approvals', href: '/dashboard/admin/products/approvals' },
                 ]
             },
             { name: 'Categories', href: '/dashboard/admin/categories', icon: LuLayoutGrid, submenu: null },

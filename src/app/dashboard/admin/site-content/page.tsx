@@ -444,7 +444,7 @@ function ServicesSectionTab({ data, setData }: { data: any; setData: any }) {
 
     return (
         <div>
-            <EnabledToggle enabled={s.enabled !== false} onChange={(v) => set({ enabled: v })} hint="Image cards, 2 per row (up to 16). Tapping a card opens the service-request form. Title & description are optional — an image alone works." />
+            <EnabledToggle enabled={s.enabled !== false} onChange={(v) => set({ enabled: v })} hint="Image cards, 2 per row (up to 32). Tapping a card opens the service-request form. Title & description are optional — an image alone works." />
             <div style={card}>
                 <div style={{ display: 'grid', gap: '12px' }}>
                     <BiInput label="Section Title" value={s.title} onChange={v => set({ title: v })} placeholderEn="Our Services" placeholderBn="আমাদের সার্ভিস সমূহ" />
