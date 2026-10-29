@@ -12,7 +12,9 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+# --include=dev forces devDependencies (typescript, tailwind, etc.) even when
+# Coolify injects NODE_ENV=production at build time — next build needs them.
+RUN npm ci --include=dev
 
 
 # ---- Stage 2: build ------------------------------------------------
@@ -31,7 +33,9 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+# Build straight with next, not `npm run build`, so the build never depends on
+# the package.json build script (which may be prefixed with other commands).
+RUN npx next build
 
 
 # ---- Stage 3: runtime ----------------------------------------------
