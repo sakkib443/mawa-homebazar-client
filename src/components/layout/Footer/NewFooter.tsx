@@ -137,7 +137,7 @@ const NewFooter: React.FC = () => {
                     <div className="grid gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-12">
 
                         {/* Brand column — logo + tagline + address + socials */}
-                        <div className="sm:col-span-2 lg:col-span-4">
+                        <div className="sm:col-span-2 lg:col-span-6">
                             <div className="mb-3">
                                 <Logo imgClassName="h-[52px] md:h-[60px]" />
                             </div>
@@ -205,17 +205,6 @@ const NewFooter: React.FC = () => {
                                 <li><Link href="/companies" className={linkCls}>{T.companies}</Link></li>
                                 <li><Link href="/dealers" className={linkCls}>{T.dealers}</Link></li>
                                 <li><Link href="/contact" className={linkCls}>{T.contact}</Link></li>
-                            </ul>
-                        </div>
-
-                        {/* Partner With Us — routes visitors to the three application forms */}
-                        <div className="lg:col-span-2">
-                            <h4 className="text-sm font-extrabold text-white mb-4 uppercase tracking-wide">{T.partner}</h4>
-                            <ul className="space-y-2.5">
-                                <li><Link href="/join/company"  className={linkCls}>{T.joinCompany}</Link></li>
-                                <li><Link href="/join/dealer"   className={linkCls}>{T.joinDealer}</Link></li>
-                                <li><Link href="/join/retailer" className={linkCls}>{T.joinRetailer}</Link></li>
-                                <li><Link href="/join"          className={linkCls}>{isBn ? 'সব অপশন দেখুন' : 'See all options'}</Link></li>
                             </ul>
                         </div>
 
