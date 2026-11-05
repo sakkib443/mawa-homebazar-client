@@ -29,7 +29,7 @@ interface LogoProps {
     imgClassName?: string;
 }
 
-const LOGO_SRC = '/logo/safwan-logo.jpeg';
+const LOGO_SRC = '/logo/mawa-logo.jpeg';
 const ALT = 'Safwan · Mawa Homebazar BD';
 
 const Logo: React.FC<LogoProps> = ({
