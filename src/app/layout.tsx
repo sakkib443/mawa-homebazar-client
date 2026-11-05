@@ -9,10 +9,10 @@ import { brandCssVariables, brandFontsHref } from "@/config/brand";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.mawahomebazarbd.com"),
   title: {
-    default: "Mawa Homebazar BD — Your trusted online marketplace",
-    template: "%s | Mawa Homebazar BD",
+    default: "Mawa HomeBazar | Online Shopping & Fast Home Delivery",
+    template: "%s | Mawa HomeBazar",
   },
-  description: "Shop quality products at the best prices with Mawa Homebazar BD, your trusted online marketplace in Bangladesh.",
+  description: "Mawa HomeBazar-এ অর্ডার করুন ৩০+ ক্যাটাগরির প্রোডাক্ট ও সার্ভিস। ৫০+ কোম্পানির সার্ভিস ও ১০০+ কোম্পানির প্রোডাক্ট কিনলেই পাচ্ছেন দ্রুত হোম ডেলিভারি!",
   keywords: ["mawa homebazar bd", "mawahomebazarbd", "online shopping", "ecommerce", "bangladesh", "marketplace", "best deals", "products"],
   applicationName: "Mawa Homebazar BD",
   alternates: { canonical: "/" },
@@ -23,15 +23,15 @@ export const metadata: Metadata = {
   // approach unreliable. No `icons` field is needed here as a result.
   openGraph: {
     type: "website",
-    siteName: "Mawa Homebazar BD",
-    title: "Mawa Homebazar BD — Your trusted online marketplace",
-    description: "Shop quality products at the best prices with Mawa Homebazar BD, your trusted online marketplace in Bangladesh.",
+    siteName: "Mawa HomeBazar",
+    title: "Mawa HomeBazar | Online Shopping & Fast Home Delivery",
+    description: "Mawa HomeBazar-এ অর্ডার করুন ৩০+ ক্যাটাগরির প্রোডাক্ট ও সার্ভিস। ৫০+ কোম্পানির সার্ভিস ও ১০০+ কোম্পানির প্রোডাক্ট কিনলেই পাচ্ছেন দ্রুত হোম ডেলিভারি!",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mawa Homebazar BD — Your trusted online marketplace",
-    description: "Shop quality products at the best prices with Mawa Homebazar BD, your trusted online marketplace in Bangladesh.",
+    title: "Mawa HomeBazar | Online Shopping & Fast Home Delivery",
+    description: "Mawa HomeBazar-এ অর্ডার করুন ৩০+ ক্যাটাগরির প্রোডাক্ট ও সার্ভিস। ৫০+ কোম্পানির সার্ভিস ও ১০০+ কোম্পানির প্রোডাক্ট কিনলেই পাচ্ছেন দ্রুত হোম ডেলিভারি!",
   },
   robots: { index: true, follow: true },
 };
